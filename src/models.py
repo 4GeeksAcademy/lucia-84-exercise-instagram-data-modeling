@@ -8,13 +8,16 @@ from eralchemy2 import render_er
 Base = declarative_base()
 
 class User(Base):
-    __tablename__ = 'person'
+    __tablename__ = 'user'
     # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+    # Notice that each column is also a normal Python instance attribute
     id = Column(Integer, primary_key=True)
+    email = Column (String(50), nullable=False, unique=True)
     name = Column(String(50), nullable=False)
     lastname = Column (String(50), nullable=False)
-    email = Column (String(50), nullable=False)
+  
+
+    post = relationship("Post")
 
 class Address(Base):
     __tablename__ = 'address'
@@ -24,8 +27,8 @@ class Address(Base):
     street_name = Column(String(250))
     street_number = Column(String(250))
     post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('user.id'))
-    person = relationship(User)
+    user_id = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
 class Post (Base):
   __tablename__ = 'post'
@@ -46,11 +49,9 @@ class Post (Base):
     post_id = Column(Integer, ForeignKey('post.id'), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
     content = Column(String(500), nullable=False)
-    
-
     user = relationship ("User")
     post = relationship ("Post", back_populates="comments")
-
+    
     class Like(Base):
         
         __tablename__ = 'like'
