@@ -22,7 +22,6 @@ class Address(Base):
     street_number = Column(String(250))
     post_code = Column(String(250), nullable=False)
     user_id = Column(Integer, ForeignKey('user.id'))
-    user = relationship(User)
 
 class Post(Base):
     __tablename__ = 'post'
@@ -46,24 +45,22 @@ class Comment(Base):
 
 class Like(Base):
     __tablename__ = 'like'
-    id = Column(Integer, primary_key=True)  # Ensure a primary key is defined
-    post_id = Column(Integer, ForeignKey('post.id'), nullable=False)
-    user_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+    post_id = Column(Integer, ForeignKey('post.id'), primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'), primary_key=True)
     user = relationship("User")
     post = relationship("Post", back_populates="likes")
 
     def to_dict(self):
         return { 
-            'id': self.id,
             'post_id': self.post_id,
             'user_id': self.user_id,
         }
 
-# Code to render the ER diagram
+
 if __name__ == '__main__':
     from eralchemy import render_er
     try:
-        # Generating the ER diagram
+       
         render_er(Base, 'diagram.png')
         print("Success! Check the diagram.png file")
     except Exception as e:
